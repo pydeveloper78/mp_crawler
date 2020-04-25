@@ -1,0 +1,27 @@
+name: Deploy
+env:
+  MP_CRAWLER_HOST: 'centos@3.90.16.82'
+
+on:
+  push:
+    branches: master
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout latest code version
+      uses: actions/checkout@v2
+
+    - name: Write SSH key to file
+      run: echo "$MP_CRAWLER_KEY" > mp_crawler.pem && chmod 0600 mp_crawler.pem
+      shell: bash
+      env:
+        MP_CRAWLER_KEY: ${{secrets.MP_CRAWLER_KEY}}
+
+    - name: Copy (rsync) code to the server
+      run: rsync -e 'ssh -i mp_crawler.pem -o "StrictHostKeyChecking no"' -rltgoDzvO --delete --exclude .git/ --exclude mp_crawler.pem . ${{env.MP_CRAWLER_HOST}}:mp_crawler/
+
+    - name: Copy config files
+      run: ssh -i mp_crawler.pem ${{env.MP_CRAWLER_HOST}} -o "StrictHostKeyChecking no" -T "cp ~/shared/.env ~/mp_crawler/ && ln -sf ~/shared/log ~/mp_crawler"
