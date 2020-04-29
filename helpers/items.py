@@ -1,6 +1,10 @@
 # coding=utf-8
 from scrapy import Field, Item
-from scrapy.loader.processors import Join, MapCompose, TakeFirst
+
 
 class ProductItem(Item):
-	images = Field()
+    id = Field()
+    link = Field()
+    slug = Field()
+    html_content = Field()
+    images = Field()
