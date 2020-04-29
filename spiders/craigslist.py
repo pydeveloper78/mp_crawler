@@ -40,7 +40,7 @@ class CraigslistCrawler(Spider):
         for link in links:
             _link = link.rstrip('/').strip()
             _link = _link.split('#')[0].strip()
-            if _link in ['#', '/', '', None] or '?sale_date' in _link or '?lang=' in _link or '?sort=' in _link:
+            if _link in ['#', '/', '', None] or 'sale_date=' in _link or '?lang=' in _link or '?sort=' in _link:
                 continue
             elif '//' not in _link:
                 _link = response.urljoin(_link)
