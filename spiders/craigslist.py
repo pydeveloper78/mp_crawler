@@ -38,13 +38,15 @@ class CraigslistCrawler(Spider):
 
         links = response.css('a[href]::attr(href)').getall()
         for link in links:
-            link = link.split('#')[0]
-            if link in ['#', '/', '', None] or '?sale_date=' in link or '?lang=' in link or '?sort=' in link:
+            _link = link.rstrip('/').strip()
+            _link = _link.split('#')[0].strip()
+            if _link in ['#', '/', '', None] or '?sale_date' in _link or '?lang=' in _link or '?sort=' in _link:
                 continue
-            elif '//' not in link:
-                link = response.urljoin(link)
-            elif 'http' not in link:
-                link = 'https:' + link
-            if 'newyork.craigslist.org' in link:
-                req = make_req(link)
+            elif '//' not in _link:
+                _link = response.urljoin(_link)
+            if 'http' not in _link and '//' in _link:
+                _link = 'https:' + _link
+            _link = _link.strip()
+            if 'newyork.craigslist.org' in _link:
+                req = make_req(_link)
                 yield req

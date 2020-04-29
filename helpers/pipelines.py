@@ -18,7 +18,7 @@ class CraigslistImagesPipeline(ImagesPipeline):
             yield req
 
     def item_completed(self, results, item, info):
-        item["images"] = results.copy()
+        item["images"] = [result for result in results if result[0]]
         return item
 
     def file_path(self, request, response=None, info=None):
